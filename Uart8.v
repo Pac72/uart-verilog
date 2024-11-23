@@ -1,6 +1,3 @@
-`include "BaudRateGenerator.v"
-`include "Uart8Receiver.v"
-`include "Uart8Transmitter.v"
 
 /*
  * Simple 8-bit UART realization
