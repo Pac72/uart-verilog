@@ -15,6 +15,7 @@ localparam offset_RX_OVERSAMPLE_RATE = 17;
 localparam ENABLED_BAUD_CLOCK_STEPS = 17;
 
 reg        clk;
+reg        reset;
 reg        en_1;
 reg        en_2;
 reg        txStart_1;
@@ -38,6 +39,7 @@ wire       bus_wire_2_1;
 
 Uart8 #(.CLOCK_RATE(CLOCK_FREQ)) uart1(
   .clk(clk),
+  .reset(reset),
 
   // rx interface
   .rxEn(en_2),
@@ -60,6 +62,7 @@ defparam uart1.RX_OVERSAMPLE_RATE = offset_RX_OVERSAMPLE_RATE;
 
 Uart8 #(.CLOCK_RATE(CLOCK_FREQ)) uart2(
   .clk(clk),
+  .reset(reset),
 
   // rx interface
   .rxEn(en_1),
@@ -81,6 +84,7 @@ Uart8 #(.CLOCK_RATE(CLOCK_FREQ)) uart2(
 defparam uart2.RX_OVERSAMPLE_RATE = offset_RX_OVERSAMPLE_RATE;
 
 initial clk = 1'b0;
+initial reset = 1'b0;
 
 always #SIM_TIMESTEP_FACTOR clk = ~clk;
 
@@ -89,6 +93,12 @@ initial begin
 
   $dumpfile(`DUMP_FILE_NAME);
   $dumpvars(0, test);
+
+#10
+  reset = 1'b1;
+
+#100
+  reset = 1'b0;
 
 #600
   en_1 = 1'b0;

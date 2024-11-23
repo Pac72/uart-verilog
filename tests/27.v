@@ -12,6 +12,7 @@ localparam SIM_STEP_FREQ = 1 / 0.0000001 / 2; // this sim timescale 100ns
 localparam SIM_TIMESTEP_FACTOR = SIM_STEP_FREQ / CLOCK_FREQ;
 
 reg        clk;
+reg        reset;
 reg        en_1;
 reg        rx;
 wire       rxBusy_2;
@@ -22,6 +23,7 @@ wire [7:0] rxByte_2;
 
 Uart8 #(.CLOCK_RATE(CLOCK_FREQ)) uart(
   .clk(clk),
+  .reset(reset),
 
   // rx interface
   .rxEn(en_1),
@@ -35,12 +37,19 @@ Uart8 #(.CLOCK_RATE(CLOCK_FREQ)) uart(
 );
 
 initial clk = 1'b0;
+initial reset = 1'b0;
 
 always #SIM_TIMESTEP_FACTOR clk = ~clk;
 
 initial begin
   $dumpfile(`DUMP_FILE_NAME);
   $dumpvars(0, test);
+
+#10
+  reset = 1'b1;
+
+#100
+  reset = 1'b0;
 
 // #65 == 1 rx clock period (approximately) at 9600 baud
 #240

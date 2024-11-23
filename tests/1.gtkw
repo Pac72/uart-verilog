@@ -17,6 +17,8 @@
 [signals_width] 210
 [sst_expanded] 1
 [sst_vpaned_height] 482
+test.uart1.clk
+test.uart1.reset
 @22
 test.uart1.txInst.in_data[7:0]
 @28
@@ -27,18 +29,18 @@ test.uart1.txBusy
 test.uart1.txDone
 test.uart1.txInst.bit_index[2:0]
 test.uart1.txInst.state[2:0]
-test.uart1.txInst.out
+test.uart1.txInst.txOut
 test.uart2.rxClk
 test.uart2.rxEn
 test.uart2.rxBusy
 test.uart2.rxDone
 test.uart2.rxErr
-test.uart2.rxInst.in
-test.uart2.rxInst.in_sample
+test.uart2.rxInst.rxIn
+test.uart2.rxInst.rxIn_sample
 test.uart2.rxInst.state[2:0]
 test.uart2.rxInst.bit_index[2:0]
 @22
 test.uart2.rxInst.received_data[7:0]
-test.uart2.rxInst.out[7:0]
+test.uart2.rxInst.rxOut[7:0]
 [pattern_trace] 1
 [pattern_trace] 0

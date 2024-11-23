@@ -24,7 +24,7 @@ test.uart.rxInst.en
 test.uart.rxInst.busy
 test.uart.rxInst.done
 test.uart.rxInst.err
-test.uart.rxInst.in_sample
+test.uart.rxInst.rxIn_sample
 @c00022
 test.uart.rxInst.in_prior_hold_reg[3:0]
 @28
@@ -50,6 +50,6 @@ test.uart.rxInst.out_hold_count[4:0]
 test.uart.rxInst.state[2:0]
 test.uart.rxInst.bit_index[2:0]
 test.uart.rxInst.received_data[7:0]
-test.uart.rxInst.out[7:0]
+test.uart.rxInst.rxOut[7:0]
 [pattern_trace] 1
 [pattern_trace] 0
