@@ -47,7 +47,12 @@ wire [3:0] in_current_hold_reg;
  *   earlier, unconditioned signal {in} must be ignored
  */
 always @(posedge clk) begin
-    in_reg <= { in_reg[0], in };
+    if (en) begin
+        in_reg <= { in_reg[0], in };
+    end
+    else begin
+        in_reg <= 0;
+    end 
 end
 
 assign in_sample = in_reg[1];
@@ -57,7 +62,12 @@ assign in_sample = in_reg[1];
  *   minimum hold time of 4 {clk} ticks for any rx signal
  */
 always @(posedge clk) begin
-    in_hold_reg <= { in_hold_reg[3:1], in_sample, in_reg[0] };
+    if (en) begin
+        in_hold_reg <= { in_hold_reg[3:1], in_sample, in_reg[0] };
+    end
+    else begin
+        in_hold_reg <= 5'b0;
+    end
 end
 
 assign in_prior_hold_reg   = in_hold_reg[4:1];
@@ -74,14 +84,21 @@ assign in_current_hold_reg = in_hold_reg[3:0];
  *   direct from STOP_BIT state or READY state
  */
 always @(posedge clk) begin
-    if (|out_hold_count) begin
-        out_hold_count     <= out_hold_count + 5'b1;
-        if (out_hold_count == 5'b10000) begin // reached 16 -
-            // timed output interval ends
-            out_hold_count <= 5'b0;
-            done           <= 1'b0;
-            out            <= 8'b0;
+    if (en) begin
+        if (|out_hold_count) begin
+            out_hold_count     <= out_hold_count + 5'b1;
+            if (out_hold_count == 5'b10000) begin // reached 16 -
+                // timed output interval ends
+                out_hold_count <= 5'b0;
+                done           <= 1'b0;
+                out            <= 8'b0;
+            end
         end
+    end
+    else begin
+        out_hold_count <= 5'b0;
+        done <= 1'b0;
+        out <= 8'b0;
     end
 end
 
