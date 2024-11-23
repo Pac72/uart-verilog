@@ -14,8 +14,8 @@ module BaudRateGenerator #(
 
 localparam RX_ACC_MAX   = CLOCK_RATE / (2 * BAUD_RATE * RX_OVERSAMPLE_RATE);
 localparam TX_ACC_MAX   = CLOCK_RATE / (2 * BAUD_RATE);
-localparam RX_ACC_WIDTH = $clog2(RX_ACC_MAX);
-localparam TX_ACC_WIDTH = $clog2(TX_ACC_MAX);
+localparam RX_ACC_WIDTH = $clog2(RX_ACC_MAX + 1);
+localparam TX_ACC_WIDTH = $clog2(TX_ACC_MAX + 1);
 
 reg [RX_ACC_WIDTH-1:0] rx_counter = 0;
 reg [TX_ACC_WIDTH-1:0] tx_counter = 0;
