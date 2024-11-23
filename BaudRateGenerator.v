@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 /*
  * Baud rate generator to divide {CLOCK_RATE} (internal system clock) into
  *   {BAUD_RATE} tx/rx pair, with rx oversample by default 16x
