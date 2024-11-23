@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 
 /*
  * Simple 8-bit UART realization
