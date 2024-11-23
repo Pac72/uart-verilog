@@ -5,7 +5,7 @@
  *
  * Able to receive 8 bits of serial data, one start bit, one stop bit
  *
- * When receive is detected and in progress over {in}, {busy} is driven high
+ * When receive is detected and in progress over {rxIn}, {busy} is driven high
  *
  * When receive is complete, {done} is driven high for one serial bit cycle
  *   (aka baud interval: equal to 16 {clk} ticks)
@@ -18,13 +18,13 @@
  * (*Note this module's logic is hard-coded based on 16x oversampling rate)
  */
 module Uart8Receiver (
-    input wire clk,      // rx data sampling rate
+    input wire clk,        // rx data sampling rate
     input wire en,
-    input wire in,       // rx line
-    output reg busy,     // transaction is in progress
-    output reg done,     // end of transaction
-    output reg err,      // error while receiving data
-    output reg [7:0] out // the received data assembled in parallel form
+    input wire rxIn,       // rx line
+    output reg busy,       // transaction is in progress
+    output reg done,       // end of transaction
+    output reg err,        // error while receiving data
+    output reg [7:0] rxOut // the received data assembled in parallel form
 );
 
 reg [2:0] state          = `RESET;
@@ -44,11 +44,11 @@ wire [3:0] in_current_hold_reg;
  * This prevents metastability problems crossing into rx clock domain
  *
  * After registering, only the in_sample wire is to be accessed - the
- *   earlier, unconditioned signal {in} must be ignored
+ *   earlier, unconditioned signal {rxIn} must be ignored
  */
 always @(posedge clk) begin
     if (en) begin
-        in_reg <= { in_reg[0], in };
+        in_reg <= { in_reg[0], rxIn };
     end
     else begin
         in_reg <= 0;
@@ -91,14 +91,14 @@ always @(posedge clk) begin
                 // timed output interval ends
                 out_hold_count <= 5'b0;
                 done           <= 1'b0;
-                out            <= 8'b0;
+                rxOut          <= 8'b0;
             end
         end
     end
     else begin
         out_hold_count <= 5'b0;
         done <= 1'b0;
-        out <= 8'b0;
+        rxOut <= 8'b0;
     end
 end
 
@@ -130,7 +130,7 @@ always @(posedge clk) begin
             end else begin
                 err        <= 1'b0;
             end
-            out            <= 8'b0; // output parallel data only during {done}
+            rxOut          <= 8'b0; // output parallel data only during {done}
             // next state
             if (en) begin
                 state      <= `IDLE;
@@ -190,7 +190,7 @@ always @(posedge clk) begin
                 // sample_count wraps around to zero
                 bit_index     <= 3'b1;
                 received_data <= { in_sample, 7'b0 };
-                out           <= 8'b0;
+                rxOut         <= 8'b0;
                 state         <= `DATA_BITS;
             end
         end
@@ -240,7 +240,7 @@ always @(posedge clk) begin
                         sample_count   <= 4'b0;
                         out_hold_count <= 5'b1;
                         done           <= 1'b1;
-                        out            <= received_data;
+                        rxOut          <= received_data;
                         state          <= `IDLE;
                     end else if (&sample_count) begin // reached 15
                         // bit did not go high or remain high -
@@ -256,7 +256,7 @@ always @(posedge clk) begin
                         // can accept the transmitted data and output it
                         sample_count   <= 4'b0;
                         done           <= 1'b1;
-                        out            <= received_data;
+                        rxOut          <= received_data;
                         state          <= `READY;
                     end else if (&sample_count) begin // reached 15
                         // did not meet min high hold time -
@@ -271,7 +271,7 @@ always @(posedge clk) begin
 
         `READY: begin
             /*
-             * Wait one full bit cycle to sustain the {out} data, the
+             * Wait one full bit cycle to sustain the {rxOut} data, the
              *   {done} signal or the {err} signal
              */
             sample_count              <= sample_count + 4'b1;
@@ -294,7 +294,7 @@ always @(posedge clk) begin
                         sample_count  <= 4'b1;
                     end
                     done              <= 1'b0;
-                    out               <= 8'b0;
+                    rxOut             <= 8'b0;
                     state             <= `IDLE;
                 end else begin
                     // in_sample drops from high to low

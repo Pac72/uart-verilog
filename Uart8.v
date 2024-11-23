@@ -15,11 +15,11 @@ module Uart8 #(
 
     // rx interface
     input wire rxEn,
-    input wire rx,
+    input wire rxIn,
     output wire rxBusy,
     output wire rxDone,
     output wire rxErr,
-    output wire [7:0] out,
+    output wire [7:0] rxOut,
 
     // tx interface
     input wire txEn,
@@ -50,11 +50,11 @@ BaudRateGenerator #(
 Uart8Receiver rxInst (
     .clk(rxClk),
     .en(rxEn),
-    .in(rx),
+    .rxIn(rxIn),
     .busy(rxBusy),
     .done(rxDone),
     .err(rxErr),
-    .out(out)
+    .rxOut(rxOut)
 );
 
 Uart8Transmitter #(
