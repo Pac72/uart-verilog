@@ -1,8 +1,6 @@
 `timescale 100ns/1ns
 `default_nettype none
 
-`include "Uart8.v"
-
 module test;
 
 localparam CLOCK_FREQ = 12000000; // Alhambra board
@@ -62,19 +60,19 @@ Uart8 #(.CLOCK_RATE(CLOCK_FREQ)) uart1(
 
   // rx interface
   .rxEn(en_2),
-  .rx(bus_wire_2_1),
+  .rxIn(bus_wire_2_1),
   .rxBusy(rxBusy_1),
   .rxDone(rxDone_1),
   .rxErr(rxErr_1),
-  .out(rxByte_1),
+  .rxOut(rxByte_1),
 
   // tx interface
   .txEn(en_1),
   .txStart(txStart_1),
-  .in(txByte_1),
+  .txIn(txByte_1),
   .txBusy(txBusy_1),
   .txDone(txDone_1),
-  .tx(bus_wire_1_2)
+  .txOut(bus_wire_1_2)
 );
 
 Uart8 #(.CLOCK_RATE(CLOCK_FREQ)) uart2(
@@ -82,19 +80,19 @@ Uart8 #(.CLOCK_RATE(CLOCK_FREQ)) uart2(
 
   // rx interface
   .rxEn(en_1),
-  .rx(bus_wire_1_2),
+  .rxIn(bus_wire_1_2),
   .rxBusy(rxBusy_2),
   .rxDone(rxDone_2),
   .rxErr(rxErr_2),
-  .out(rxByte_2),
+  .rxOut(rxByte_2),
 
   // tx interface
   .txEn(en_2),
   .txStart(txStart_2),
-  .in(txByte_2),
+  .txIn(txByte_2),
   .txBusy(txBusy_2),
   .txDone(txDone_2),
-  .tx(bus_wire_2_1)
+  .txOut(bus_wire_2_1)
 );
 
 initial clk = 1'b0;

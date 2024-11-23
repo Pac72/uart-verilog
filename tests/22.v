@@ -1,8 +1,6 @@
 `timescale 100ns/1ns
 `default_nettype none
 
-`include "Uart8.v"
-
 module test;
 
 localparam CLOCK_FREQ = 12000000; // Alhambra board
@@ -27,11 +25,11 @@ Uart8 #(.CLOCK_RATE(CLOCK_FREQ)) uart(
 
   // rx interface
   .rxEn(en_1),
-  .rx(rx),
+  .rxIn(rx),
   .rxBusy(rxBusy_2),
   .rxDone(rxDone_2),
   .rxErr(rxErr_2),
-  .out(rxByte_2)
+  .rxOut(rxByte_2)
 
   // tx interface (unused)
 );
