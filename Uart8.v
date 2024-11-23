@@ -23,10 +23,10 @@ module Uart8 #(
     // tx interface
     input wire txEn,
     input wire txStart,
-    input wire [7:0] in,
+    input wire [7:0] txIn,
     output wire txBusy,
     output wire txDone,
-    output wire tx
+    output wire txOut
 );
 
 // this value cannot be changed in the current implementation
@@ -61,10 +61,10 @@ Uart8Transmitter #(
     .clk(txClk),
     .en(txEn),
     .start(txStart),
-    .in(in),
+    .txIn(txIn),
     .busy(txBusy),
     .done(txDone),
-    .out(tx)
+    .txOut(txOut)
 );
 
 endmodule

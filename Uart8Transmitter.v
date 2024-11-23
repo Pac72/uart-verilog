@@ -43,10 +43,10 @@ module Uart8Transmitter #(
     input wire clk,      // baud rate
     input wire en,
     input wire start,    // start transmission
-    input wire [7:0] in, // parallel data to transmit
+    input wire [7:0] txIn, // parallel data to transmit
     output reg busy,     // transmit is in progress
     output reg done,     // end of transmission
-    output reg out       // tx line for serial data
+    output reg txOut       // tx line for serial data
 );
 
 reg [2:0] state;
@@ -65,14 +65,14 @@ always @(posedge clk) begin
                 // outputs
                 busy      <= 1'b0;
                 done      <= 1'b0;
-                out       <= 1'b1; // drive the line high for IDLE state
+                txOut       <= 1'b1; // drive the line high for IDLE state
                 // next state
                 state <= `IDLE;
             end
 
             `IDLE: begin
                 if (start) begin
-                    in_data <= in; // register the input data
+                    in_data <= txIn; // register the input data
                     state   <= `START_BIT;
                 end
             end
@@ -81,7 +81,7 @@ always @(posedge clk) begin
                 bit_index <= 3'b0;
                 busy      <= 1'b1;
                 done      <= 1'b0;
-                out       <= 1'b0; // send the space output, aka start bit (low)
+                txOut       <= 1'b0; // send the space output, aka start bit (low)
                 state     <= `DATA_BITS;
             end
 
@@ -90,7 +90,7 @@ always @(posedge clk) begin
                 // realization is simple compared to routing the access
                 // dynamically, i.e. using in_data[bit_index]
                 in_data   <= { 1'b0, in_data[7:1] };
-                out       <= in_data[0];
+                txOut       <= in_data[0];
                 // manage the state transition
                 bit_index <= bit_index + 3'b1;
                 if (&bit_index) begin
@@ -101,10 +101,10 @@ always @(posedge clk) begin
 
             `STOP_BIT: begin
                 done              <= 1'b1; // signal the transmission stop
-                out               <= 1'b1; // transition to mark state output (high)
+                txOut               <= 1'b1; // transition to mark state output (high)
                 if (start) begin
                     if (done == 1'b0) begin // this distinguishes 2 sub-states
-                        in_data   <= in; // register new input data
+                        in_data   <= txIn; // register new input data
                         if (TURBO_FRAMES) begin
                             state <= `START_BIT; // go direct to transmit
                         end else begin
