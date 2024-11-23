@@ -11,6 +11,7 @@ module Uart8 #(
     parameter TURBO_FRAMES = 0          // see Uart8Transmitter
 )(
     input wire clk, // board clock (*note: at the {CLOCK_RATE} rate)
+    input wire reset,
 
     // rx interface
     input wire rxEn,
@@ -41,6 +42,7 @@ BaudRateGenerator #(
     .RX_OVERSAMPLE_RATE(RX_OVERSAMPLE_RATE)
 ) generatorInst (
     .clk(clk),
+    .reset(reset),
     .rxClk(rxClk),
     .txClk(txClk)
 );
